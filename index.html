@@ -2,156 +2,151 @@
 <html lang="en">
     <!-- API reference and jQuery from AccuWeather's github sample - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/  -->
     <head>
-            <!-- Required meta tags -->
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <!-- Bootstrap CSS -->
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-            <title>Weather Dashboard</title>
-
-            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        
+            <title>Weather Dashboard</title>     
     </head>
 
     <body>
 
-        <nav class="navbar navbar-dark bg-dark">
-            <span class="navbar-brand mb-0 h1">Weather Dashboard</span>
-        </nav>
-        <p></p>
+            <nav class="navbar navbar-dark bg-dark">
+                <span class="navbar-brand mb-0 h1">Weather Dashboard</span>
+            </nav>
+            <p></p>
 
-        <h2>Location Search and Current Conditions</h2>
-        <p></p>
+            <h2>Location Search and Current Conditions</h2>
+            <p></p>
 
-        <div>Enter city:
-            <input id="awxSearchTextBox" placeholder="Redmond, WA" />
-            <input id="awxSearchButton" type="submit" value="Search" />
-        </div>
+            <div>Enter city:
+                <input id="awxSearchTextBox" placeholder="Redmond, WA" />
+                <input id="awxSearchButton" type="submit" value="Search" />
+            </div>
 
-        <h3>Location Information</h3>
-        <ul>
-            <!-- <li>URL: <span id="awxLocationUrl"></span> -->
-            <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
-        </ul>
+            <h3>Location Information</h3>
+            <ul>
+                <!-- <li>URL: <span id="awxLocationUrl"></span> -->
+                <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
+            </ul>
 
-        <h3>Current Conditions</h3>
-        <ul>
-            <!-- <li>URL: <span id="awxWeatherUrl"></span> -->
-            <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
-        </ul>
-        
-        <h5>jQuery referenced from AccuWeather API sample:</h5>
-        <ul>
-            <li>jQuery reference:<a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
-            <li>AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>
-        </ul>
+            <h3>Current Conditions</h3>
+            <ul>
+                <!-- <li>URL: <span id="awxWeatherUrl"></span> -->
+                <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
+            </ul>
+            
+            <h5>jQuery referenced from AccuWeather API sample:</h5>
+            <ul>
+                <li>jQuery reference:<a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
+                <li>AccuWeather API is available at <a href="https://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>
+            </ul>
 
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-        <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+            <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+            <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+            <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
 
-    <script type="text/javascript">
+        <script type="text/javascript">
 
-        // Configure our weather widget during jQuery.OnReady
-        $(function () {
+            // Configure our weather widget during jQuery.OnReady
+            $(function () {
 
-            var isMetric = false;
-            var locationUrl = "";
-            var currentConditionsUrl = "";
-            var language = "en";
-            var apiKey = "3cha0kQ04CvbqInqDMeg4aS8ifMEbN2w";
+                var isMetric = false;
+                var locationUrl = "";
+                var currentConditionsUrl = "";
+                var language = "en";
+                var apiKey = "3cha0kQ04CvbqInqDMeg4aS8ifMEbN2w";
 
-            var awxClearMessages = function() {
-                $("#awxLocationInfo").html("...");
-                $("#awxLocationUrl").html("...");
-                $("#awxWeatherInfo").html("...");
-                $("#awxWeatherUrl").html("...");
-            }
+                var awxClearMessages = function() {
+                    $("#awxLocationInfo").html("...");
+                    $("#awxLocationUrl").html("...");
+                    $("#awxWeatherInfo").html("...");
+                    $("#awxWeatherUrl").html("...");
+                };
 
-            var awxCityLookUp = function (freeText) {
-                awxClearMessages();
-                //locationUrl = "http://apidev.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
-                locationUrl = "http://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
-                    $.ajax({
-                        type: "GET",
-                        url: locationUrl,
-                        dataType: "jsonp",
-                        cache: true,                    // Use cache for better reponse times
-                        jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
-                        success: function (data) { awxCityLookUpFound(data); }
-                    });
-            };
+                var awxCityLookUp = function (freeText) {
+                    awxClearMessages();
+                    //locationUrl = "http://apidev.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                    locationUrl = "https://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                        $.ajax({
+                            type: "GET",
+                            url: locationUrl,
+                            dataType: "jsonp",
+                            cache: true,                    // Use cache for better reponse times
+                            jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                            success: function (data) { awxCityLookUpFound(data); }
+                        });
+                };
 
-            // Displays what location(s) were found.
-            var awxCityLookUpFound = function (data) {
-                var msg, locationKey = null;
+                // Displays what location(s) were found.
+                var awxCityLookUpFound = function (data) {
+                    var msg, locationKey = null;
 
-                $("#awxLocationUrl").html("<a href=" + encodeURI(locationUrl) + ">" + locationUrl + "</a>");
-                if (data.length == 1) {
-                    locationKey = data[0].Key;
-                    msg = "One location found: <b>" + data[0].LocalizedName + "</b>. Key: " + locationKey;
-                }
-                else if(data.length == 0) {
-                    msg = "No locations found."
-                }
-                else {
-                    locationKey = data[0].Key;
-                    msg = "Multiple locations found (" + data.length + "). Selecting the first one: " + 
-                        "<b>" + data[0].LocalizedName + ", " + data[0].Country.ID + "</b>. Key: " + locationKey;
-                }
+                    $("#awxLocationUrl").html("<a href=" + encodeURI(locationUrl) + ">" + locationUrl + "</a>");
+                    if (data.length == 1) {
+                        locationKey = data[0].Key;
+                        msg = "One location found: <b>" + data[0].LocalizedName + "</b>. Key: " + locationKey;
+                    }
+                    else if(data.length == 0) {
+                        msg = "No locations found."
+                    }
+                    else {
+                        locationKey = data[0].Key;
+                        msg = "Multiple locations found (" + data.length + "). Selecting the first one: " + 
+                            "<b>" + data[0].LocalizedName + ", " + data[0].Country.ID + "</b>. Key: " + locationKey;
+                    }
 
-                $("#awxLocationInfo").html(msg);
-                if(locationKey != null) {
-                    awxGetCurrentConditions(locationKey);
-                }
-                    
-            };
+                    $("#awxLocationInfo").html(msg);
+                    if(locationKey != null) {
+                        awxGetCurrentConditions(locationKey);
+                    }
+                        
+                };
 
-            // Gets current conditions for the location.
-            var awxGetCurrentConditions = function (locationKey) {
-                //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
-                currentConditionsUrl = "http://dataservice.accuweather.com/currentconditions/v1/" + 
-                    locationKey + ".json?language=" + language + "&apikey=" + apiKey;
-                    $.ajax({
-                        type: "GET",
-                        url: currentConditionsUrl,
-                        dataType: "jsonp",
-                        cache: true,                    // Use cache for better reponse times
-                        jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
-                        success: function (data) {
-                                var html;
-                                if(data && data.length > 0) {
-                                    var conditions = data[0];
-                                    var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
-                                    html = conditions.WeatherText + ", " + temp.Value + " " + temp.Unit;
-                                }
-                                else {
-                                    html = "N/A";
-                                }
-                            $("#awxWeatherInfo").html(html);
-                            $("#awxWeatherUrl").html("<a href=" + currentConditionsUrl + ">" + currentConditionsUrl + "</a>");
-                        }
-                    });
-            };
+                // Gets current conditions for the location.
+                var awxGetCurrentConditions = function (locationKey) {
+                    //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
+                    currentConditionsUrl = "https://dataservice.accuweather.com/currentconditions/v1/" + 
+                        locationKey + ".json?language=" + language + "&apikey=" + apiKey;
+                        $.ajax({
+                            type: "GET",
+                            url: currentConditionsUrl,
+                            dataType: "jsonp",
+                            cache: true,                    // Use cache for better reponse times
+                            jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                            success: function (data) {
+                                    var html;
+                                    if(data && data.length > 0) {
+                                        var conditions = data[0];
+                                        var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
+                                        html = conditions.WeatherText + ", " + temp.Value + " " + temp.Unit;
+                                    }
+                                    else {
+                                        html = "N/A";
+                                    }
+                                $("#awxWeatherInfo").html(html);
+                                $("#awxWeatherUrl").html("<a href=" + currentConditionsUrl + ">" + currentConditionsUrl + "</a>");
+                            }
+                        });
+                };
 
-            $("#awxSearchTextBox").keypress(function (e) {
-                if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                $("#awxSearchTextBox").keypress(function (e) {
+                    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                        var text = $("#awxSearchTextBox").val();
+                        awxCityLookUp(text);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+
+                $("#awxSearchButton").click(function () {
                     var text = $("#awxSearchTextBox").val();
                     awxCityLookUp(text);
-                    return false;
-                } else {
-                    return true;
-                }
+                });
+
             });
 
-            $("#awxSearchButton").click(function () {
-                var text = $("#awxSearchTextBox").val();
-                awxCityLookUp(text);
-            });
-
-        });
-
-    </script>
+        </script>
 
     </body>
 
