@@ -25,8 +25,5 @@ ktrnthsnr
 
 ### ©️2020 ktrnthsnr
 
-## Current draft
-![Mockup](./mockup.JPG "Weather Dashboard mockup")
-
 ## Mockup
 ![Mockup](./assets/img/weatherdashboardmockup.png "Weather Dashboard mockup")
