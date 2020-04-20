@@ -1,20 +1,54 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
+    <!-- API reference and jQuery from AccuWeather's github sample - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/  -->
+    <head>
+            <!-- Required meta tags -->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            <title>Weather Dashboard</title>
 
-<!---
-    Reference API key from:  http://api.accuweather.com/developers/
-    Souce code sample from: https://github.com/AccuWeather-Inc/AccuWeatherApiSamples
-    -->
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-   <!-- <link rel="stylesheet" href="./assets/css/style.css" /> -->
+    <body>
 
-    <title>Weather Dashboard</title>  
-    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+        <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand mb-0 h1">Weather Dashboard</span>
+        </nav>
+        <p></p>
+
+        <h2>Location Search and Current Conditions</h2>
+        <p></p>
+
+        <div>Enter city:
+            <input id="awxSearchTextBox" placeholder="Redmond, WA" />
+            <input id="awxSearchButton" type="submit" value="Search" />
+        </div>
+
+        <h3>Location Information</h3>
+        <ul>
+            <!-- <li>URL: <span id="awxLocationUrl"></span> -->
+            <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
+        </ul>
+
+        <h3>Current Conditions</h3>
+        <ul>
+            <!-- <li>URL: <span id="awxWeatherUrl"></span> -->
+            <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
+        </ul>
+        
+        <h5>jQuery referenced from AccuWeather API sample:</h5>
+        <ul>
+            <li>jQuery reference:<a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
+            <li>AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>
+        </ul>
+
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+        <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
 
     <script type="text/javascript">
 
@@ -24,11 +58,7 @@
             var isMetric = false;
             var locationUrl = "";
             var currentConditionsUrl = "";
-
-            //english
             var language = "en";
-
-            //my API key
             var apiKey = "3cha0kQ04CvbqInqDMeg4aS8ifMEbN2w";
 
             var awxClearMessages = function() {
@@ -38,20 +68,18 @@
                 $("#awxWeatherUrl").html("...");
             }
 
-            //city or city, state or zipcode
             var awxCityLookUp = function (freeText) {
                 awxClearMessages();
                 //locationUrl = "http://apidev.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
-                 //note: updated hostname
-                locationUrl = "https://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
-                $.ajax({
-                    type: "GET",
-                    url: locationUrl,
-                    dataType: "jsonp",
-                    cache: true,                    // Use cache for better reponse times
-                    jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
-                    success: function (data) { awxCityLookUpFound(data); }
-                });
+                locationUrl = "http://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                    $.ajax({
+                        type: "GET",
+                        url: locationUrl,
+                        dataType: "jsonp",
+                        cache: true,                    // Use cache for better reponse times
+                        jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                        success: function (data) { awxCityLookUpFound(data); }
+                    });
             };
 
             // Displays what location(s) were found.
@@ -82,29 +110,28 @@
             // Gets current conditions for the location.
             var awxGetCurrentConditions = function (locationKey) {
                 //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
-                //note: updated hostname
-                currentConditionsUrl = "https://dataservice.accuweather.com/currentconditions/v1/" + 
+                currentConditionsUrl = "http://dataservice.accuweather.com/currentconditions/v1/" + 
                     locationKey + ".json?language=" + language + "&apikey=" + apiKey;
-                $.ajax({
-                    type: "GET",
-                    url: currentConditionsUrl,
-                    dataType: "jsonp",
-                    cache: true,                    // Use cache for better reponse times
-                    jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
-                    success: function (data) {
-                            var html;
-                            if(data && data.length > 0) {
-                                var conditions = data[0];
-                                var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
-                                html = conditions.WeatherText + ", " + temp.Value + " " + temp.Unit;
-                            }
-                            else {
-                                html = "N/A";
-                            }
-                        $("#awxWeatherInfo").html(html);
-                        $("#awxWeatherUrl").html("<a href=" + currentConditionsUrl + ">" + currentConditionsUrl + "</a>");
-                    }
-                });
+                    $.ajax({
+                        type: "GET",
+                        url: currentConditionsUrl,
+                        dataType: "jsonp",
+                        cache: true,                    // Use cache for better reponse times
+                        jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                        success: function (data) {
+                                var html;
+                                if(data && data.length > 0) {
+                                    var conditions = data[0];
+                                    var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
+                                    html = conditions.WeatherText + ", " + temp.Value + " " + temp.Unit;
+                                }
+                                else {
+                                    html = "N/A";
+                                }
+                            $("#awxWeatherInfo").html(html);
+                            $("#awxWeatherUrl").html("<a href=" + currentConditionsUrl + ">" + currentConditionsUrl + "</a>");
+                        }
+                    });
             };
 
             $("#awxSearchTextBox").keypress(function (e) {
@@ -125,47 +152,7 @@
         });
 
     </script>
-</head>
 
-    <body>
-        <div class="container-fluid">
-            <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-                <header class="col-12 col-lg-3 bg-dark text-light d-flex flex-column p-4 p-lg-3">
-                <class="text-center"display-3>Weather Dashboard</h1>
-            </header>
-            </nav>
-        </div>
-
-  
-<main>             
-        <h5>Seach by city or zipcode</h5>
-        <div>Enter city:
-            <input id="awxSearchTextBox" placeholder="Redmond, WA" />
-            <input id="awxSearchButton" type="submit" value="Search" />
-        </div>
-        
-
-        <h5>Location Information</h5>
-        <ul>
-            <li>URL: <span id="awxLocationUrl"></span>
-            <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
-        </ul>
-        
-
-        <h5>Current Conditions</h5>
-        <ul>
-            <li>URL: <span id="awxWeatherUrl"></span>
-            <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
-        </ul>
-</main>
-    
-    <footer>
-        <h8>Reference info</h8>
-        <ul>
-            <li><h8>jQuery was sourced by an AccuWeather reference from <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>. </h8></li>
-            <li><h8>Detailed information about the AccuWeather API is available at <a href="https://api.accuweather.com/developers/">https://api.accuweather.com/developers/</a>. </h8></li>       
-        </ul>
-    </footer>
-</body>
+    </body>
 
 </html>
