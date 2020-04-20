@@ -3,6 +3,8 @@
 ## Description
 A weather dashboard with form inputs to search for a city's current and future weather conditions.
 
+Get your AccuWeather API Key at http://developer.accuweather.com/user/register.
+
 ## Built With
 * API
 * JavaScript

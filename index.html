@@ -1,61 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Part of the API sample is referenced from AccuWeather github - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/
-        The AccuWeather API provides subscribers access to location based weather data via a simple RESTful web interface.
-        The code samples in this repo show basic functionality on how to get started. You can find detailed information about the API at http://api.accuweather.com/
-        You need to obtain an API Key from AccuWeather in order for these demos to run in your environment
-  -->
-<!--
-    This page shows how to search for a location (by free text) and 
-    retrieve the current conditions for the location.
-    For more information visit: http://api.accuweather.com/developers/
-    ** Remember that you need to obtain your own API key by contacting AccuWeather. **
+<!---
+    Reference API key from:  http://api.accuweather.com/developers/
+    Souce code sample from: https://github.com/AccuWeather-Inc/AccuWeatherApiSamples
     -->
-   
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />s
 
-    <title>Weather Dashboard</title>
-  
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script> 
-    <script src="./assets/js/script.js"></script>
+    <title>Weather Dashboard</title>  
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+    <script type="text/javascript">
+
+        // Configure our weather widget during jQuery.OnReady
+        $(function () {
+
+            var isMetric = false;
+            var locationUrl = "";
+            var currentConditionsUrl = "";
+
+            //english
+            var language = "en";
+
+            //my API key
+            var apiKey = "3cha0kQ04CvbqInqDMeg4aS8ifMEbN2w";
+
+            var awxClearMessages = function() {
+                $("#awxLocationInfo").html("...");
+                $("#awxLocationUrl").html("...");
+                $("#awxWeatherInfo").html("...");
+                $("#awxWeatherUrl").html("...");
+            }
+
+            //city or city, state or zipcode
+            var awxCityLookUp = function (freeText) {
+                awxClearMessages();
+                //locationUrl = "http://apidev.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                 //note: updated hostname
+                locationUrl = "http://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                $.ajax({
+                    type: "GET",
+                    url: locationUrl,
+                    dataType: "jsonp",
+                    cache: true,                    // Use cache for better reponse times
+                    jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                    success: function (data) { awxCityLookUpFound(data); }
+                });
+            };
+
+            // Displays what location(s) were found.
+            var awxCityLookUpFound = function (data) {
+                var msg, locationKey = null;
+
+                $("#awxLocationUrl").html("<a href=" + encodeURI(locationUrl) + ">" + locationUrl + "</a>");
+                if (data.length == 1) {
+                    locationKey = data[0].Key;
+                    msg = "One location found: <b>" + data[0].LocalizedName + "</b>. Key: " + locationKey;
+                }
+                else if(data.length == 0) {
+                    msg = "No locations found."
+                }
+                else {
+                    locationKey = data[0].Key;
+                    msg = "Multiple locations found (" + data.length + "). Selecting the first one: " + 
+                        "<b>" + data[0].LocalizedName + ", " + data[0].Country.ID + "</b>. Key: " + locationKey;
+                }
+
+                $("#awxLocationInfo").html(msg);
+                if(locationKey != null) {
+                    awxGetCurrentConditions(locationKey);
+                }
+                    
+            };
+
+            // Gets current conditions for the location.
+            var awxGetCurrentConditions = function (locationKey) {
+                //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
+                //note: updated hostname
+                currentConditionsUrl = "http://dataservice.accuweather.com/currentconditions/v1/" + 
+                    locationKey + ".json?language=" + language + "&apikey=" + apiKey;
+                $.ajax({
+                    type: "GET",
+                    url: currentConditionsUrl,
+                    dataType: "jsonp",
+                    cache: true,                    // Use cache for better reponse times
+                    jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                    success: function (data) {
+                            var html;
+                            if(data && data.length > 0) {
+                                var conditions = data[0];
+                                var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
+                                html = conditions.WeatherText + ", " + temp.Value + " " + temp.Unit;
+                            }
+                            else {
+                                html = "N/A";
+                            }
+                        $("#awxWeatherInfo").html(html);
+                        $("#awxWeatherUrl").html("<a href=" + currentConditionsUrl + ">" + currentConditionsUrl + "</a>");
+                    }
+                });
+            };
+
+            $("#awxSearchTextBox").keypress(function (e) {
+                if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                    var text = $("#awxSearchTextBox").val();
+                    awxCityLookUp(text);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            $("#awxSearchButton").click(function () {
+                var text = $("#awxSearchTextBox").val();
+                awxCityLookUp(text);
+            });
+
+        });
+
+    </script>
 </head>
 
 <body>
-    <h2>Location Search and Current Conditions</h2>
-    <p>This page shows how to search for a location by name (e.g. Redmond, WA) or by postal code (e.g. 98052) and fetch the current conditions and the location.</p>
 
-    <div>Enter location name:
-        <input id="awxSearchTextBox" placeholder="Redmond, WA" />
-        <input id="awxSearchButton" type="submit" value="Search" />
-    </div>
+    <body>
+        <div class="container-fluid">
+            <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+                <header class="col-12 col-lg-3 bg-dark text-light d-flex flex-column p-4 p-lg-3">
+                <class="text-center"display-3>Weather Dashboard</h1>
+            </header>
+            </nav>
+        </div>
 
-    <h3>Location Information</h3>
-    <ul>
-        <li>URL: <span id="awxLocationUrl"></span>
-        <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
-    </ul>
+    </br>
+</br>
+</br>
+<main>             
+        <h5>Seach by city or zipcode</h5>
+        <div>Enter city:
+            <input id="awxSearchTextBox" placeholder="Redmond, WA" />
+            <input id="awxSearchButton" type="submit" value="Search" />
+        </div>
+        </br>
 
-    <h3>Current Conditions</h3>
-    <ul>
-        <li>URL: <span id="awxWeatherUrl"></span>
-        <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
-    </ul>
+        <h5>Location Information</h5>
+        <ul>
+            <li>URL: <span id="awxLocationUrl"/>N/A
+            <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
+        </ul>
+        </br>
+
+        <h5>Current Conditions</h5>
+        <ul>
+            <li>URL: <span id="awxWeatherUrl"/>N/A
+            <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
+        </ul>
+</main>
     
- 
-    <!--
-    <ul>
-        <li>The source jQuery code for part of this website is available at <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
-        <li>Detailed information about the AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>        
-    </ul>
-    -->
-    <script src="./assets/js/script.js"></script>
+    <footer>
+        <h8>Reference info</h8>
+        <ul>
+            <li><h8>jQuery was sourced by an AccuWeather reference from <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>. </h8></li>
+            <li><h8>Detailed information about the AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>. </h8></li>       
+        </ul>
+    </footer>
 </body>
 
 </html>
