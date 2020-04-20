@@ -1,23 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- Part of the API sample is referenced from AccuWeather github - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/
+        The AccuWeather API provides subscribers access to location based weather data via a simple RESTful web interface.
+        The code samples in this repo show basic functionality on how to get started. You can find detailed information about the API at http://api.accuweather.com/
+        You need to obtain an API Key from AccuWeather in order for these demos to run in your environment
+  -->
+<!--
+    This page shows how to search for a location (by free text) and 
+    retrieve the current conditions for the location.
+    For more information visit: http://api.accuweather.com/developers/
+    ** Remember that you need to obtain your own API key by contacting AccuWeather. **
+    -->
+   
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="./assets/css/style.css" />
-  <title>Weather Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css" />
+
+    <title>Weather Dashboard</title>
+  
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script> 
+    <script src="./assets/js/script.js"></script>
 </head>
 
 <body>
-    Weather Dashboard
+    <h2>Location Search and Current Conditions</h2>
+    <p>This page shows how to search for a location by name (e.g. Redmond, WA) or by postal code (e.g. 98052) and fetch the current conditions and the location.</p>
 
-  
+    <div>Enter location name:
+        <input id="awxSearchTextBox" placeholder="Redmond, WA" />
+        <input id="awxSearchButton" type="submit" value="Search" />
+    </div>
 
-  
-  <script src="./assets/js/script.js"></script>
+    <h3>Location Information</h3>
+    <ul>
+        <li>URL: <span id="awxLocationUrl"/>N/A
+        <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
+    </ul>
 
+    <h3>Current Conditions</h3>
+    <ul>
+        <li>URL: <span id="awxWeatherUrl"/>N/A
+        <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
+    </ul>
+    
+    <h3>More info</h3>
+    <ul>
+        <li>The source jQuery code for part of this website is available at <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
+        <li>Detailed information about the AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>        
+    </ul>
+    <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
