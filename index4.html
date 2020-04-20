@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="./assets/css/style.css" />
 
     <title>Weather Dashboard</title>  
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
 
     <script type="text/javascript">
 
@@ -43,7 +43,7 @@
                 awxClearMessages();
                 //locationUrl = "http://apidev.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
                  //note: updated hostname
-                locationUrl = "http://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
+                locationUrl = "https://dataservice.accuweather.com/locations/v1/search?q=" + freeText + "&apikey=" + apiKey;
                 $.ajax({
                     type: "GET",
                     url: locationUrl,
@@ -83,7 +83,7 @@
             var awxGetCurrentConditions = function (locationKey) {
                 //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
                 //note: updated hostname
-                currentConditionsUrl = "http://dataservice.accuweather.com/currentconditions/v1/" + 
+                currentConditionsUrl = "https://dataservice.accuweather.com/currentconditions/v1/" + 
                     locationKey + ".json?language=" + language + "&apikey=" + apiKey;
                 $.ajax({
                     type: "GET",
@@ -166,7 +166,7 @@
         <h8>Reference info</h8>
         <ul>
             <li>The source code for this example is available at <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
-            <li>Detailed information about the AccuWeather API is available at <a href="http://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>       
+            <li>Detailed information about the AccuWeather API is available at <a href="https://api.accuweather.com/developers/">http://api.accuweather.com/developers/</a>.</li>       
         </ul>
     </footer>
 </body>
