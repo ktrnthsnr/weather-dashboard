@@ -1,66 +1,45 @@
 <!DOCTYPE HTML>
 <html lang="en">
-    <!-- API reference from https://api.accuweather.com/developers/ and jQuery from AccuWeather's github sample - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/  -->
+    <!-- API reference and jQuery from AccuWeather's github sample - https://github.com/AccuWeather-Inc/AccuWeatherApiSamples/  -->
     <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">            
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
             <title>Weather Dashboard</title>     
     </head>
 
     <body>
-        <header>
+
             <nav class="navbar navbar-dark bg-dark">
                 <span class="navbar-brand mb-0 h1">Weather Dashboard</span>
             </nav>
             <p></p>
-                <section>
-                    <h5 align="right">Today's Date</h5>
-                    <p align="right" id="date"></p>
-                </section>
-        </header>
-        <hr>
 
-            <h4>Weather by City</h4>
+            <h3>Location Search and Current Conditions</h3>
             <p></p>
 
             <div>Enter city:
                 <input id="awxSearchTextBox" placeholder="Redmond, WA" />
                 <input id="awxSearchButton" type="submit" value="Search" />
             </div>
-            <br>
 
             <h4>Location Information</h4>
             <ul>
                 <!-- <li>URL: <span id="awxLocationUrl"></span> -->
                 <li><span id="awxLocationInfo">(Location information will be displayed here)</span>
             </ul>
-            <br>
-            
+
             <h4>Current Conditions</h4>
             <ul>
                 <!-- <li>URL: <span id="awxWeatherUrl"></span> -->
                 <li><span id="awxWeatherInfo">(Current conditions will be displayed here)</span>
             </ul>
-            <br>
-
-            <h4>Forecasted Conditions</h4>
-            <ul>
-                <!-- <li>URL: <span id="awxWeatherUrl"></span> -->
-                <li><span id="awxWeatherForecastInfo">(Forecasted conditions will be displayed here)</span>
-            </ul>
-            <br>
-
-            <hr>
             
-            <small>
-            <h8>API reference:</h8>
+            <h8>jQuery referenced from AccuWeather API sample:</h8>
             <ul>
-                <li>The AccuWeather API is available at <a href="https://api.accuweather.com/developers/">https://api.accuweather.com/developers/</a>.</li>
-                <li>The jQuery from this site is referenced from <a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>                
+                <li>jQuery reference:<a href="https://github.com/AccuWeather/AccuWeatherApiSamples">https://github.com/AccuWeather/AccuWeatherApiSamples</a>.</li>
+                <li>AccuWeather API is available at <a href="https://api.accuweather.com/developers/">https://api.accuweather.com/developers/</a>.</li>
             </ul>
-            </small>
-
 
             <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
             <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
@@ -74,7 +53,6 @@
                 var isMetric = false;
                 var locationUrl = "";
                 var currentConditionsUrl = "";
-                var ForecastsUrl = "";
                 var language = "en";
                 var apiKey = "3cha0kQ04CvbqInqDMeg4aS8ifMEbN2w";
 
@@ -83,26 +61,7 @@
                     $("#awxLocationUrl").html("...");
                     $("#awxWeatherInfo").html("...");
                     $("#awxWeatherUrl").html("...");
-                    $("#awxWeatherForecastInfo").html("...");
-                    $("#awxWeatherForecastUrl").html("...");
                 };
-
-                //enter city input text box
-                $("#awxSearchTextBox").keypress(function (e) {
-                    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-                        var text = $("#awxSearchTextBox").val();
-                        awxCityLookUp(text);
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-                
-                //search button
-                $("#awxSearchButton").click(function () {
-                    var text = $("#awxSearchTextBox").val();
-                    awxCityLookUp(text);
-                });
 
                 var awxCityLookUp = function (freeText) {
                     awxClearMessages();
@@ -139,13 +98,7 @@
                     $("#awxLocationInfo").html(msg);
                     if(locationKey != null) {
                         awxGetCurrentConditions(locationKey);
-                      //awxGetforecastConditions(locationKey); // not working.
                     }
-
-                    // $("#awxLocationInfo").html(msg);
-                    // if(locationKey != null) {
-                    //     awxGetforecastConditions(locationKey);
-                    // }
                         
                 };
 
@@ -176,56 +129,22 @@
                         });
                 };
 
-                // actual: 5 day forecast
-                // http://dataservice.accuweather.com/forecasts/v1/daily/5day/349084?apikey=<apikey>
+                $("#awxSearchTextBox").keypress(function (e) {
+                    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                        var text = $("#awxSearchTextBox").val();
+                        awxCityLookUp(text);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
 
-                // Actual: current conditions
-                // http://dataservice.accuweather.com/currentconditions/v1/335315.json?apikey=<apikey>
-
-                // Gets forecasted conditions for the location.
-                var awxGetforecastConditions = function (locationKey) {
-                    //currentConditionsUrl = "http://apidev.accuweather.com/currentconditions/v1/" + 
-                    //forecastConditionsUrl = "http://apidev.accuweather.com/forecasts/v1/daily/5day/" + 
-                    ForecastsUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/" +
-                        locationKey + ".json?language=" + language + "&apikey=" + apiKey;
-                        $.ajax({
-                            type: "GET",
-                            url: ForecastsUrl,
-                            dataType: "jsonp",
-                            cache: true,                    // Use cache for better reponse times
-                            jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
-                            success: function (data) {
-                                    var html;
-                                    if(data && data.length > 0) {
-                                        var forecasts = data[0];
-                                        var temp = isMetric ? forecasts.Temperature.Metric : forecasts.Temperature.Imperial;
-                                        html = forecasts.WeatherText + ", " + temp.Value + " " + temp.Unit;
-                                    }
-                                    else {
-                                        html = "N/A";
-                                    }
-                                $("#awxWeatherForecastInfo").html(html);
-                                $("#awxWeatherForecastUrl").html("<a href=" + ForecastsUrl + ">" + ForecastsUrl + "</a>");
-                            }
-                        });
-                };
-
-                
+                $("#awxSearchButton").click(function () {
+                    var text = $("#awxSearchTextBox").val();
+                    awxCityLookUp(text);
+                });
 
             });
-
-    // ------------------------------------------------------------------------------------------ //
-
-        //current date up top - reference stackoverflow Meddows  
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0');
-        var yyyy = today.getFullYear();
-        today = mm + '/' + dd + '/' + yyyy;
-        document.getElementById("date").innerHTML = today;
-
-
-    // ------------------------------------------------------------------------------------------ //
 
         </script>
 
